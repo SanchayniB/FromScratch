@@ -21,9 +21,7 @@ class LinearRegression():
 
         for i in range(self.iterations):
             self.param = self.param -  (self.alpha/self.ndata)*(self.X.T@(self.X@self.param - self.y))
-            
-            
-            cost = sum(((self.y-self.X@self.param)**2)/len(self.X))/ self.ndata
+            cost = sum((self.y-self.X@self.param)**2)/ self.ndata
             Costs[i] = cost
         
         self.y_pred = self.X@self.param
@@ -61,14 +59,42 @@ class LinearRegression():
             y_pred = self.y_pred
             y = self.y
 
-        print(y_pred[:7])
         SST = ((y - y.sum())**2).sum()
         SSE = ((y - y_pred)**2).sum()
         return (1-(SSE/SST))
 
-    def plot(self):
+    def get_error(self,X=None, y=None):
+        if X!=None and y!=None:
+            y_pred = predict(X)
+        else:
+            y_pred = self.y_pred
+            y = self.y
+
+        error = y - y_pred
+        return error
+
+    def plot_cost(self):
         plt.plot(range(len(self.cost)),self.cost)
-        plt.title('Loss Function')
-        plt.xlabel('iterations')
+        plt.title('Loss Function',{'fontsize': 18})
+        plt.xlabel('Iterations')
         plt.ylabel('Cost')
+        plt.show()
+
+
+    def plot_error(self, error=None):
+        if error == None:
+            error = self.get_error()
+
+        plt.scatter(range(len(error)),error)
+        plt.title('Heteroscedasticity in Error',{'fontsize': 18})
+        plt.xlabel('Index')
+        plt.ylabel('Error')
+        plt.show()
+
+    def plot_errorwrty(self, X=None, y=None):
+        error = self.get_error(X,y)
+        plt.scatter(self.y,error)
+        plt.title('Heteroscedasticity in Error',{'fontsize': 18})
+        plt.xlabel('y')
+        plt.ylabel('Error')
         plt.show()
